@@ -17,7 +17,7 @@ function App() {
   const [board, setBoard] = useState(createInitialBoard)
   const [currentPlayer, setCurrentPlayer] = useState<Player>('black')
   const [status, setStatus] = useState<'playing' | 'finished'>('playing')
-  const [message, setMessage] = useState<string>('')
+  const [message, setMessage] = useState<React.ReactNode>('')
   const [botThinking, setBotThinking] = useState(false)
 
   const botTimeoutRef = useRef<number | null>(null)
@@ -56,7 +56,19 @@ function App() {
       if (!hasAnyLegalMove(nextBoard, other)) {
         const result = computeGameResult(nextBoard)
         setStatus('finished')
-        setMessage(`Game over. Winner: ${result.winner}. (Black ${result.black} - White ${result.white})`)
+        setMessage(
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8, justifyContent: 'center' }}>
+            <strong style={{ color: '#ffd700' }}>Game over. Winner:</strong>
+            {result.winner !== 'draw' ? (
+              <span className={`disc ${result.winner}`} style={{ width: 24, height: 24 }}>
+                <span className="disc-face disc-face-black" />
+                <span className="disc-face disc-face-white" />
+              </span>
+            ) : (
+              <strong style={{ color: '#ffd700' }}>Draw</strong>
+            )}
+          </div>
+        )
         return
       }
 
@@ -122,10 +134,38 @@ function App() {
     <>
       <h1>Reversi</h1>
       <div className="card" style={{ display: 'grid', gap: 12, justifyItems: 'center' }}>
-        <div style={{ display: 'flex', gap: 12, alignItems: 'center', flexWrap: 'wrap', justifyContent: 'center' }}>
-          <div>Turn: {status === 'playing' ? currentPlayer : '—'}</div>
-          <div>Black: {score.black}</div>
-          <div>White: {score.white}</div>
+        <div style={{ display: 'flex', gap: 12, alignItems: 'center', justifyContent: 'space-between', width: '100%', maxWidth: 400 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            Turn:
+            {status === 'playing' ? (
+              <span className={`disc ${currentPlayer}`} style={{ width: 24, height: 24 }}>
+                <span className="disc-face disc-face-black" />
+                <span className="disc-face disc-face-white" />
+              </span>
+            ) : (
+              '—'
+            )}
+          </div>
+          <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
+            <div style={{ position: 'relative', display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}>
+              <span className="disc black" style={{ width: 40, height: 40 }}>
+                <span className="disc-face disc-face-black" />
+                <span className="disc-face disc-face-white" />
+              </span>
+              <span style={{ position: 'absolute', color: 'white', fontWeight: 'bold', fontSize: '14px' }}>
+                {score.black}
+              </span>
+            </div>
+            <div style={{ position: 'relative', display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}>
+              <span className="disc white" style={{ width: 40, height: 40 }}>
+                <span className="disc-face disc-face-black" />
+                <span className="disc-face disc-face-white" />
+              </span>
+              <span style={{ position: 'absolute', color: 'black', fontWeight: 'bold', fontSize: '14px' }}>
+                {score.white}
+              </span>
+            </div>
+          </div>
           <button onClick={resetGame}>Reset</button>
         </div>
 
