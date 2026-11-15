@@ -1,4 +1,6 @@
-# React + TypeScript + Vite
+# Reversi
+
+Reversi game with a bot opponent, built with React, TypeScript and Vite. Installable as a PWA.
 
 ## Development
 
