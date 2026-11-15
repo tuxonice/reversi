@@ -75,7 +75,7 @@ scripts/deploy.sh --rollback  # switch back to the previous release
 
 Only tags and commit hashes (7 to 40 characters) are accepted, never branches. A short hash must be unambiguous and reachable from a branch on GitHub, and the script always resolves it to the full commit and logs it, so a deploy always matches an exact, reviewable version.
 
-Requirements on the server: `git` and Node 24+ (the repository is cloned over HTTPS, so it must be public or `REPO_URL` must include credentials). Point the web server root at `/var/www/example.net/current`. Override defaults with `BASE_DIR`, `REPO_URL` and `KEEP` (releases to keep, default 5). Set the security headers from `vercel.json` in the web server config.
+Requirements on the server: `git` and Node 24+ (the repository is cloned over HTTPS, so it must be public or `REPO_URL` must include credentials). Point the web server root at `/var/www/example.net/current`. Override defaults with `BASE_DIR`, `REPO_URL` and `KEEP` (releases to keep, default 5). On Apache, `public/.htaccess` ships in every release and sets the security headers, HSTS and cache rules (needs `mod_headers` and `AllowOverride FileInfo`). On other servers, apply the headers from `vercel.json` in the web server config.
 
 ## Deploy to Vercel
 
