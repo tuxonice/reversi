@@ -10,7 +10,7 @@ Reversi (Othello) in the browser: play as black against a bot that plays white. 
 
 ## Requirements
 
-- Node.js 24 or newer
+- Node.js 24 or newer (see `.nvmrc`)
 
 ## Development
 
@@ -52,6 +52,7 @@ The engine has no React dependency, so rules and bot logic can be tested in isol
 - CI (`.github/workflows/ci.yml`) runs `npm run check`, the build and `npm audit` on every pull request, on pushes to `main` and weekly.
 - Dependabot opens weekly update PRs for npm packages and GitHub Actions.
 - `vercel.json` sets a strict Content-Security-Policy and other security headers. If you host elsewhere, apply the same headers there.
+- `.npmrc` enforces the Node version, skips dependency install scripts and ignores package versions younger than 7 days. Dependabot uses the same 7-day cooldown, and GitHub Actions are pinned to commit SHAs.
 - `package.json` has a `minimatch` override to fix an audit advisory. TypeScript is held at 6.0 because `typescript-eslint` does not support 7 yet. Revisit both when upstream catches up.
 
 ## Deploy to Vercel
