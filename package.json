@@ -1,37 +1,43 @@
 {
   "name": "reversi",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "test": "vitest run",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "typecheck": "tsc -b",
+    "audit:prod": "npm audit --omit=dev",
+    "check": "npm run lint && npm run typecheck && npm test"
   },
   "dependencies": {
     "react": "^19.2.0",
     "react-dom": "^19.2.0"
   },
   "devDependencies": {
-    "@eslint/js": "^9.39.1",
-    "@types/node": "^24.10.12",
+    "@eslint/js": "^10.0.1",
+    "@types/node": "^26.6.6",
     "@types/react": "^19.2.7",
     "@types/react-dom": "^19.2.3",
-    "@vitejs/plugin-react": "^5.1.1",
-    "eslint": "^9.39.1",
+    "@vitejs/plugin-react": "^6.3.0",
+    "eslint": "^10.15.0",
     "eslint-plugin-react-hooks": "^7.0.1",
-    "eslint-plugin-react-refresh": "^0.4.24",
-    "globals": "^16.5.0",
-    "typescript": "~5.9.3",
+    "eslint-plugin-react-refresh": "^0.5.8",
+    "globals": "^17.14.0",
+    "typescript": "~6.0",
     "typescript-eslint": "^8.48.0",
-    "vite": "^7.3.1",
-    "vitest": "^4.0.18"
+    "vite": "^8.3.8",
+    "vitest": "^5.1.0"
   },
   "overrides": {
-    "@typescript-eslint/typescript-estree": {
-      "minimatch": "^11.0.1"
-    }
+    "minimatch": "^11.0.1"
+  },
+  "description": "Reversi game with a bot opponent, built with React and TypeScript as an installable PWA",
+  "license": "MIT",
+  "engines": {
+    "node": ">=20.19"
   }
 }
