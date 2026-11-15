@@ -1,26 +1,58 @@
 # Reversi
 
-Reversi game with a bot opponent, built with React, TypeScript and Vite. Installable as a PWA.
+Reversi (Othello) in the browser: play as black against a bot that plays white. Built with React, TypeScript and Vite, and installable as a PWA that works offline.
+
+## Features
+
+- Standard 8x8 rules with legal-move highlighting, automatic passes, live score and a winner screen
+- Greedy bot opponent (picks the move that flips the most discs, ties broken at random)
+- Installable PWA with offline support via a service worker
+
+## Requirements
+
+- Node.js 24 or newer
 
 ## Development
 
-Install dependencies:
-
 ```bash
 npm install
-```
-
-Run the dev server:
-
-```bash
 npm run dev
 ```
 
-Run tests:
+| Script | Description |
+| --- | --- |
+| `npm run dev` | Start the Vite dev server |
+| `npm run build` | Typecheck and build for production into `dist` |
+| `npm run preview` | Serve the production build locally (use this to test the PWA) |
+| `npm run lint` | Run ESLint |
+| `npm run typecheck` | Run the TypeScript compiler without emitting |
+| `npm test` | Run the Vitest unit tests |
+| `npm run check` | Lint, typecheck and test in one go |
+| `npm run audit:prod` | Audit production dependencies |
 
-```bash
-npm run test
+## Project structure
+
 ```
+src/
+  engine/reversi.ts   Pure game rules: board, legal moves, flips, scoring
+  engine/bot.ts       Bot move selection
+  engine/*.test.ts    Unit tests for the engine and bot
+  App.tsx             UI and game state
+  main.tsx            Entry point and service worker registration
+public/
+  sw.js               Service worker (offline cache)
+  manifest.webmanifest
+vercel.json           Security headers (CSP and others)
+```
+
+The engine has no React dependency, so rules and bot logic can be tested in isolation.
+
+## Quality and security
+
+- CI (`.github/workflows/ci.yml`) runs `npm run check`, the build and `npm audit` on every pull request, on pushes to `main` and weekly.
+- Dependabot opens weekly update PRs for npm packages and GitHub Actions.
+- `vercel.json` sets a strict Content-Security-Policy and other security headers. If you host elsewhere, apply the same headers there.
+- `package.json` has a `minimatch` override to fix an audit advisory. TypeScript is held at 6.0 because `typescript-eslint` does not support 7 yet. Revisit both when upstream catches up.
 
 ## Deploy to Vercel
 
@@ -57,74 +89,6 @@ vercel --prod
 
 This app is currently a single page. If you later add client-side routing (e.g. `react-router`) you may need a rewrite rule so page refreshes work on non-root routes.
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## License
 
-Currently, two official plugins are available:
-
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
-
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
-
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+[MIT](LICENSE)
