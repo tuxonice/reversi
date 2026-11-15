@@ -55,6 +55,28 @@ The engine has no React dependency, so rules and bot logic can be tested in isol
 - `.npmrc` enforces the Node version, skips dependency install scripts and ignores package versions younger than 7 days. Dependabot uses the same 7-day cooldown, and GitHub Actions are pinned to commit SHAs.
 - `package.json` has a `minimatch` override to fix an audit advisory. TypeScript is held at 6.0 because `typescript-eslint` does not support 7 yet. Revisit both when upstream catches up.
 
+## Deploy to your own server
+
+`scripts/deploy.sh` builds a tag or commit from GitHub and switches a `current` symlink to it:
+
+```
+/var/www/example.net/
+  releases/v0.1.1/    built site
+  releases/v0.1.0/
+  current -> releases/v0.1.1
+```
+
+```bash
+scripts/deploy.sh v0.1.1      # fetch tag, npm ci, check, build, switch symlink
+scripts/deploy.sh a1b2c3d     # or deploy a commit by hash (7-40 characters)
+scripts/deploy.sh --list      # show releases
+scripts/deploy.sh --rollback  # switch back to the previous release
+```
+
+Only tags and commit hashes (7 to 40 characters) are accepted, never branches. A short hash must be unambiguous and reachable from a branch on GitHub, and the script always resolves it to the full commit and logs it, so a deploy always matches an exact, reviewable version.
+
+Requirements on the server: `git` and Node 24+ (the repository is cloned over HTTPS, so it must be public or `REPO_URL` must include credentials). Point the web server root at `/var/www/example.net/current`. Override defaults with `BASE_DIR`, `REPO_URL` and `KEEP` (releases to keep, default 5). Set the security headers from `vercel.json` in the web server config.
+
 ## Deploy to Vercel
 
 ### Deploy from GitHub (recommended)
