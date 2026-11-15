@@ -38,6 +38,6 @@
   "description": "Reversi game with a bot opponent, built with React and TypeScript as an installable PWA",
   "license": "MIT",
   "engines": {
-    "node": ">=20.19"
+    "node": ">=24"
   }
 }
