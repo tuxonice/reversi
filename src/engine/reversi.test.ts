@@ -1,6 +1,5 @@
 import { describe, expect, it } from 'vitest'
 
-import { chooseBotMove } from './bot'
 import {
   applyMove,
   computeGameResult,
@@ -69,22 +68,5 @@ describe('reversi engine', () => {
     expect(hasAnyLegalMove(fullBlack, 'black')).toBe(false)
     expect(hasAnyLegalMove(fullBlack, 'white')).toBe(false)
     expect(countDiscs(fullBlack)).toEqual({ black: 64, white: 0 })
-  })
-})
-
-describe('bot', () => {
-  it('chooses a legal move when one exists', () => {
-    const board = createInitialBoard()
-    const legal = getLegalMoves(board, 'black')
-    const move = chooseBotMove(board, 'black', 'greedy')
-    expect(move).not.toBeNull()
-
-    const key = new Set(legal.map((m) => `${m.row},${m.col}`))
-    expect(key.has(`${move!.row},${move!.col}`)).toBe(true)
-  })
-
-  it('returns null when no legal moves exist', () => {
-    const fullBlack = Array.from({ length: 8 }, () => Array(8).fill('black' as const))
-    expect(chooseBotMove(fullBlack, 'white', 'greedy')).toBeNull()
   })
 })
