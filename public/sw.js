@@ -32,8 +32,10 @@ self.addEventListener('fetch', (event) => {
       (async () => {
         try {
           const networkResponse = await fetch(request)
-          const cache = await caches.open(CACHE_NAME)
-          cache.put('/', networkResponse.clone())
+          if (networkResponse.ok) {
+            const cache = await caches.open(CACHE_NAME)
+            cache.put('/', networkResponse.clone())
+          }
           return networkResponse
         } catch {
           const cache = await caches.open(CACHE_NAME)
@@ -46,17 +48,31 @@ self.addEventListener('fetch', (event) => {
 
   if (url.origin !== self.location.origin) return
 
+  // Vite emits content-hashed files under /assets/, so they are safe to serve
+  // cache-first. Everything else (manifest, icons) is network-first so stale
+  // copies are never served while online.
+  const isHashedAsset = url.pathname.startsWith('/assets/')
+
   event.respondWith(
     (async () => {
       const cache = await caches.open(CACHE_NAME)
-      const cached = await cache.match(request)
-      if (cached) return cached
 
-      const response = await fetch(request)
-      if (response.ok) {
-        cache.put(request, response.clone())
+      if (isHashedAsset) {
+        const cached = await cache.match(request)
+        if (cached) return cached
       }
-      return response
+
+      try {
+        const response = await fetch(request)
+        if (response.ok) {
+          cache.put(request, response.clone())
+        }
+        return response
+      } catch (error) {
+        const cached = await cache.match(request)
+        if (cached) return cached
+        throw error
+      }
     })(),
   )
 })
